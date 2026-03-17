@@ -1,6 +1,7 @@
 ---
 created: 2026-03-17T23:22:29.604Z
 title: Create Book Plotter identity
+owner: Book Plotter
 area: general
 files: []
 ---
