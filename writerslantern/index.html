@@ -324,11 +324,13 @@ h2 { font-size: clamp(1.8rem, 4.2vw, 2.4rem); margin-bottom: 10px; }
 .motivation-message { font-size: 1.18rem; }
 .prompt-text { color: var(--muted); }
 .checkin-row {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(240px, 280px);
-  align-items: flex-start;
-  gap: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
   background: rgba(255, 250, 245, 0.72);
+  padding: 18px;
+  border-radius: 22px;
+  border: 1px solid rgba(108, 78, 49, 0.1);
 }
 .checkin-content {
   display: flex;
@@ -350,180 +352,6 @@ h2 { font-size: clamp(1.8rem, 4.2vw, 2.4rem); margin-bottom: 10px; }
   cursor: pointer;
   transition: transform 140ms ease, box-shadow 140ms ease, opacity 140ms ease;
 }
-.checkin-calendar {
-  border-radius: 18px;
-  border: 1px solid rgba(108, 78, 49, 0.16);
-  background: rgba(255, 250, 245, 0.92);
-  padding: 12px 14px 16px;
-  width: 100%;
-  min-width: 240px;
-}
-.calendar-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  margin-bottom: 8px;
-}
-.calendar-heading-group {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-}
-.calendar-heading {
-  font-size: 0.85rem;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  color: var(--muted);
-  text-align: center;
-}
-.calendar-today-button {
-  border: 1px solid rgba(108, 78, 49, 0.2);
-  background: transparent;
-  color: var(--accent-strong);
-  border-radius: 999px;
-  padding: 4px 12px;
-  font-size: 0.75rem;
-  cursor: pointer;
-}
-.calendar-nav {
-  border: 1px solid rgba(108, 78, 49, 0.2);
-  background: rgba(255, 250, 245, 0.9);
-  color: var(--muted);
-  border-radius: 50%;
-  width: 32px;
-  height: 32px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 700;
-  cursor: pointer;
-}
-.calendar-nav:disabled,
-.calendar-today-button:disabled {
-  opacity: 0.4;
-  cursor: default;
-}
-.calendar-grid {
-  display: grid;
-  grid-template-columns: repeat(7, minmax(0, 1fr));
-  gap: 6px;
-}
-.calendar-day-name {
-  text-align: center;
-  font-size: 0.7rem;
-  font-weight: 700;
-  color: var(--muted);
-}
-.calendar-day {
-  text-align: center;
-  font-size: 0.85rem;
-  padding: 6px 0 12px;
-  border-radius: 10px;
-  border: 1px solid rgba(108, 78, 49, 0.12);
-  color: var(--muted);
-  background: transparent;
-  cursor: pointer;
-  position: relative;
-  transition: transform 120ms ease, background 120ms ease, color 120ms ease, border-color 120ms ease;
-}
-.calendar-day:hover {
-  transform: translateY(-1px);
-  border-color: rgba(162, 82, 47, 0.4);
-}
-.calendar-day.is-empty {
-  border: none;
-  background: transparent;
-  cursor: default;
-}
-.calendar-day.is-logged {
-  background: rgba(27, 143, 60, 0.15);
-  border-color: rgba(27, 143, 60, 0.4);
-  color: #135c33;
-  font-weight: 700;
-}
-.calendar-day.is-selected {
-  border-color: var(--accent);
-  box-shadow: 0 0 0 2px rgba(162, 82, 47, 0.18);
-}
-.calendar-day.has-note::after {
-  content: "";
-  position: absolute;
-  bottom: 4px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--accent-strong);
-}
-.calendar-day.is-today {
-  border-color: var(--accent);
-  color: var(--accent-strong);
-}
-.calendar-day.has-note::after {
-  content: "";
-  position: absolute;
-  bottom: 4px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--accent);
-}
-.calendar-note-panel {
-  margin-top: 12px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-.calendar-note-label {
-  margin: 0;
-  font-size: 0.85rem;
-  color: var(--muted);
-}
-.calendar-note-input {
-  width: 100%;
-  border: 1px solid rgba(108, 78, 49, 0.2);
-  border-radius: 14px;
-  padding: 10px 12px;
-  font: inherit;
-  resize: vertical;
-  min-height: 60px;
-}
-.calendar-note-input:disabled {
-  background: rgba(108, 78, 49, 0.05);
-  cursor: not-allowed;
-}
-.calendar-note-suggestions {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-.calendar-note-suggestions-label {
-  margin: 0;
-  font-size: 0.75rem;
-  color: var(--muted);
-}
-.calendar-note-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-}
-.calendar-note-tag {
-  border: 1px solid rgba(108, 78, 49, 0.2);
-  border-radius: 999px;
-  padding: 4px 10px;
-  background: transparent;
-  font-size: 0.75rem;
-  cursor: pointer;
-}
-.calendar-note-save {
-  align-self: flex-end;
-}
 .checkin-button:hover:not(:disabled), .checkin-button:focus-visible:not(:disabled) {
   transform: translateY(-1px);
   box-shadow: 0 18px 34px rgba(143, 67, 35, 0.28);
@@ -533,9 +361,7 @@ h2 { font-size: clamp(1.8rem, 4.2vw, 2.4rem); margin-bottom: 10px; }
   .card { padding: 24px; }
   .top-nav { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .panel-header-row { align-items: stretch; flex-direction: column; }
-  .checkin-row { grid-template-columns: 1fr; }
   .secondary-button:not(.icon-button), .checkin-button, .genre-select-wrap, .genre-select { width: 100%; min-width: 0; }
-  .checkin-calendar { width: 100%; }
   .icon-button { align-self: flex-start; }
 }
   </style>
@@ -674,33 +500,6 @@ h2 { font-size: clamp(1.8rem, 4.2vw, 2.4rem); margin-bottom: 10px; }
             <p id="streak-text" class="streak-text"></p>
             <p id="checkin-note" class="checkin-note"></p>
             <button id="checkin-button" class="checkin-button" type="button">Mark today's writing moment</button>
-          </div>
-          <div class="checkin-calendar" aria-live="polite">
-            <div class="calendar-header">
-              <button id="calendar-prev" class="calendar-nav" type="button" aria-label="View previous month">←</button>
-              <div class="calendar-heading-group">
-                <div id="checkin-calendar-heading" class="calendar-heading"></div>
-                <button id="calendar-today" class="calendar-today-button" type="button">Today</button>
-              </div>
-              <button id="calendar-next" class="calendar-nav" type="button" aria-label="View next month">→</button>
-            </div>
-            <div id="checkin-calendar-grid" class="calendar-grid" role="grid" aria-live="polite"></div>
-            <div class="calendar-note-panel">
-              <p id="calendar-note-label" class="calendar-note-label">Select a date to add a note.</p>
-              <textarea id="calendar-note-input" class="calendar-note-input" rows="2" placeholder="Add a quick note"></textarea>
-              <div class="calendar-note-suggestions">
-                <p class="calendar-note-suggestions-label">Quick note starters:</p>
-                <div class="calendar-note-tags">
-                  <button type="button" class="calendar-note-tag" data-note-tag="Deadline: ">Deadline</button>
-                  <button type="button" class="calendar-note-tag" data-note-tag="Word-count goal: ">Word-count goal</button>
-                  <button type="button" class="calendar-note-tag" data-note-tag="Scene recap: ">Scene recap</button>
-                  <button type="button" class="calendar-note-tag" data-note-tag="Idea spark: ">Idea spark</button>
-                  <button type="button" class="calendar-note-tag" data-note-tag="Pitch / outreach: ">Pitch / outreach</button>
-                  <button type="button" class="calendar-note-tag" data-note-tag="Reminder: ">Reminder</button>
-                </div>
-              </div>
-              <button id="calendar-note-save" class="secondary-button calendar-note-save" type="button">Save note</button>
-            </div>
           </div>
         </section>
       </section>
@@ -1305,7 +1104,7 @@ window.WRITER_LANTERN_DATA = {
     try {
       var raw = localStorage.getItem(storageKey);
       if (!raw) {
-        return { streak: 0, lastCheckIn: "", mood: defaultMood, writingType: defaultWritingType, mode: "", genre: defaultGenre, page: "home", promptIndex: 0, motivationIndex: 0, checklistOpen: false, templateOpen: false, storyBuilderOpen: false, characterBuilderOpen: false, sceneBuilderOpen: false, firstChapterOpen: false, revisionChecklistOpen: false, plotHoleOpen: false, characterConsistencyOpen: false, problemOpen: false, faqOpen: false, craftGuideOpen: false, termsGuideOpen: false, proTipsOpen: false, completed: {}, checkinHistory: [], calendarOffset: 0, calendarNotes: {}, calendarSelection: "" };
+        return { streak: 0, lastCheckIn: "", mood: defaultMood, writingType: defaultWritingType, mode: "", genre: defaultGenre, page: "home", promptIndex: 0, motivationIndex: 0, checklistOpen: false, templateOpen: false, storyBuilderOpen: false, characterBuilderOpen: false, sceneBuilderOpen: false, firstChapterOpen: false, revisionChecklistOpen: false, plotHoleOpen: false, characterConsistencyOpen: false, problemOpen: false, faqOpen: false, craftGuideOpen: false, termsGuideOpen: false, proTipsOpen: false, completed: {}, checkinHistory: [] };
       }
       var parsed = JSON.parse(raw);
       var history = Array.isArray(parsed.checkinHistory) ? parsed.checkinHistory.filter(Boolean) : [];
@@ -1341,13 +1140,10 @@ window.WRITER_LANTERN_DATA = {
         termsGuideOpen: Boolean(parsed.termsGuideOpen),
         proTipsOpen: Boolean(parsed.proTipsOpen),
         completed: parsed.completed || {},
-        checkinHistory: history,
-        calendarOffset: Number(parsed.calendarOffset) || 0,
-        calendarNotes: parsed.calendarNotes || {},
-        calendarSelection: parsed.calendarSelection || ""
+        checkinHistory: history
       };
     } catch (error) {
-      return { streak: 0, lastCheckIn: "", mood: defaultMood, writingType: defaultWritingType, mode: "", genre: defaultGenre, page: "home", promptIndex: 0, motivationIndex: 0, checklistOpen: false, templateOpen: false, storyBuilderOpen: false, characterBuilderOpen: false, sceneBuilderOpen: false, firstChapterOpen: false, revisionChecklistOpen: false, plotHoleOpen: false, characterConsistencyOpen: false, problemOpen: false, faqOpen: false, craftGuideOpen: false, termsGuideOpen: false, proTipsOpen: false, completed: {}, checkinHistory: [], calendarOffset: 0, calendarNotes: {}, calendarSelection: "" };
+      return { streak: 0, lastCheckIn: "", mood: defaultMood, writingType: defaultWritingType, mode: "", genre: defaultGenre, page: "home", promptIndex: 0, motivationIndex: 0, checklistOpen: false, templateOpen: false, storyBuilderOpen: false, characterBuilderOpen: false, sceneBuilderOpen: false, firstChapterOpen: false, revisionChecklistOpen: false, plotHoleOpen: false, characterConsistencyOpen: false, problemOpen: false, faqOpen: false, craftGuideOpen: false, termsGuideOpen: false, proTipsOpen: false, completed: {}, checkinHistory: [] };
     }
   }
 
@@ -3546,137 +3342,9 @@ function renderBuilders(state) {
     };
   }
 
-  var monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-  var earliestCalendarDate = new Date(2026, 0, 1);
-  var maxCalendarMonthsAhead = 12;
-
-  function formatDateKey(year, monthIndex, day) {
-    return year + "-" + padNumber(monthIndex + 1) + "-" + padNumber(day);
-  }
-
-  function getMinCalendarOffset() {
-    var now = new Date();
-    var diffYears = earliestCalendarDate.getFullYear() - now.getFullYear();
-    var diffMonths = earliestCalendarDate.getMonth() - now.getMonth();
-    var min = diffYears * 12 + diffMonths;
-    return Math.min(0, min);
-  }
-
-  function getMaxCalendarOffset() {
-    return Math.max(0, maxCalendarMonthsAhead);
-  }
-
-  function renderCheckinCalendar(state) {
-    var heading = document.getElementById("checkin-calendar-heading");
-    var grid = document.getElementById("checkin-calendar-grid");
-    var prevButton = document.getElementById("calendar-prev");
-    var nextButton = document.getElementById("calendar-next");
-    if (!heading || !grid) return;
-    var minOffset = getMinCalendarOffset();
-    var maxOffset = getMaxCalendarOffset();
-    var offset = Number(state.calendarOffset) || 0;
-    if (offset < minOffset) {
-      offset = minOffset;
-    }
-    if (offset > maxOffset) {
-      offset = maxOffset;
-    }
-    var displayDate = new Date();
-    displayDate.setDate(1);
-    displayDate.setMonth(displayDate.getMonth() + offset);
-    var year = displayDate.getFullYear();
-    var month = displayDate.getMonth();
-    heading.textContent = monthNames[month] + " " + year + " writing log";
-    var firstDay = new Date(year, month, 1).getDay();
-    var daysInMonth = new Date(year, month + 1, 0).getDate();
-    var loggedMap = {};
-    (state.checkinHistory || []).forEach(function (date) {
-      loggedMap[String(date)] = true;
-    });
-    var selectedDate = state.calendarSelection || "";
-    var dayLabels = [
-      { short: "Sun", long: "Sunday" },
-      { short: "Mon", long: "Monday" },
-      { short: "Tue", long: "Tuesday" },
-      { short: "Wed", long: "Wednesday" },
-      { short: "Thu", long: "Thursday" },
-      { short: "Fri", long: "Friday" },
-      { short: "Sat", long: "Saturday" }
-    ];
-    var html = dayLabels.map(function (label) {
-      return '<span class="calendar-day-name" role="columnheader" aria-label="' + label.long + '">' + label.short + "</span>";
-    }).join("");
-    for (var i = 0; i < firstDay; i++) {
-      html += '<span class="calendar-day is-empty" aria-hidden="true"></span>';
-    }
-    var todayKey = getTodayKey();
-    for (var day = 1; day <= daysInMonth; day++) {
-      var key = formatDateKey(year, month, day);
-      var classes = ["calendar-day"];
-      if (loggedMap[key]) classes.push("is-logged");
-      if (state.calendarNotes && state.calendarNotes[key]) classes.push("has-note");
-      if (key === todayKey) classes.push("is-today");
-      if (key === selectedDate) classes.push("is-selected");
-      var ariaLabel = monthNames[month] + " " + day + ", " + year + (loggedMap[key] ? " — logged" : "");
-      if (key === todayKey) {
-        ariaLabel += loggedMap[key] ? " (today logged)" : " (today)";
-      }
-      html += '<button type="button" class="' + classes.join(" ") + '" data-date="' + key + '" role="gridcell" aria-label="' + ariaLabel + '">' + day + "</button>";
-    }
-    grid.innerHTML = html;
-    if (prevButton) {
-      prevButton.disabled = offset <= minOffset;
-    }
-    if (nextButton) {
-      nextButton.disabled = offset >= maxOffset;
-    }
-  }
-
-  function renderCalendarNote(state) {
-    if (!calendarNoteLabel || !calendarNoteInput || !calendarNoteSave) return;
-    var selected = state.calendarSelection || "";
-    if (!selected) {
-      calendarNoteLabel.textContent = "Select a date to add a note.";
-      calendarNoteInput.value = "";
-      calendarNoteInput.disabled = true;
-      calendarNoteSave.disabled = true;
-      return;
-    }
-    var dateObj = new Date(selected + "T00:00:00");
-    var readable = isNaN(dateObj) ? selected : monthNames[dateObj.getMonth()] + " " + dateObj.getDate() + ", " + dateObj.getFullYear();
-    calendarNoteLabel.textContent = "Note for " + readable;
-    calendarNoteInput.disabled = false;
-    calendarNoteSave.disabled = false;
-    calendarNoteInput.value = (state.calendarNotes && state.calendarNotes[selected]) || "";
-  }
 
   function render() {
     var state = loadState();
-    var minOffset = getMinCalendarOffset();
-    var maxOffset = getMaxCalendarOffset();
-    var needsSave = false;
-    var currentOffset = Number(state.calendarOffset) || 0;
-    if (currentOffset < minOffset) {
-      state.calendarOffset = minOffset;
-      currentOffset = minOffset;
-      needsSave = true;
-    }
-    if (currentOffset > maxOffset) {
-      state.calendarOffset = maxOffset;
-      currentOffset = maxOffset;
-      needsSave = true;
-    }
-    if (!state.calendarSelection) {
-      state.calendarSelection = getTodayKey();
-      needsSave = true;
-    }
-    if (!state.calendarNotes) {
-      state.calendarNotes = {};
-      needsSave = true;
-    }
-    if (needsSave) {
-      saveState(state);
-    }
     var view = getCheckInView(state);
     var streakCount = view.alreadyCheckedIn ? state.streak : view.streak;
 
@@ -3689,8 +3357,6 @@ function renderBuilders(state) {
     renderTemplates(state);
     renderChecklist(state);
     renderFaq(state);
-    renderCheckinCalendar(state);
-    renderCalendarNote(state);
 
     var motivationEl = document.getElementById("motivation-message");
     var promptHeadingEl = document.getElementById("prompt-heading");
@@ -3802,16 +3468,6 @@ function renderBuilders(state) {
   var proTipsToggle = document.getElementById("pro-tips-toggle");
   var backToTopButton = document.getElementById("back-to-top");
   var checkinButton = document.getElementById("checkin-button");
-  var calendarPrevButton = document.getElementById("calendar-prev");
-  var calendarNextButton = document.getElementId("calendar-next");
-  var calendarTodayButton = document.getElementById("calendar-today");
-  var calendarGrid = document.getElementById("checkin-calendar-grid");
-  var calendarNoteLabel = document.getElementById("calendar-note-label");
-  var calendarNoteInput = document.getElementById("calendar-note-input");
-  var calendarNoteSave = document.getElementById("calendar-note-save");
-  var calendarNoteTagButtons = document.querySelectorAll(".calendar-note-tag");
-  var calendarNoteTagButtons = document.querySelectorAll(".calendar-note-tag");
-
   if (generateButton) {
     generateButton.addEventListener("click", function () {
       var state = loadState();
@@ -3916,7 +3572,6 @@ function renderBuilders(state) {
       state.genre = "";
       state.promptIndex = 0;
       state.motivationIndex = 0;
-      state.calendarOffset = 0;
       // close panels
       state.checklistOpen = false;
       state.templateOpen = false;
@@ -3938,83 +3593,6 @@ function renderBuilders(state) {
       // visually uncheck all checkboxes
       Array.prototype.forEach.call(document.querySelectorAll('input[type=checkbox]'), function(chk){ chk.checked = false; });
       render();
-    });
-  }
-
-  if (calendarPrevButton) {
-    calendarPrevButton.addEventListener("click", function () {
-      var state = loadState();
-      var minOffset = getMinCalendarOffset();
-      var nextOffset = (state.calendarOffset || 0) - 1;
-      state.calendarOffset = nextOffset < minOffset ? minOffset : nextOffset;
-      saveState(state);
-      render();
-    });
-  }
-
-  if (calendarNextButton) {
-    calendarNextButton.addEventListener("click", function () {
-      var state = loadState();
-      var maxOffset = getMaxCalendarOffset();
-      var nextOffset = (state.calendarOffset || 0) + 1;
-      state.calendarOffset = nextOffset > maxOffset ? maxOffset : nextOffset;
-      saveState(state);
-      render();
-    });
-  }
-
-  if (calendarTodayButton) {
-    calendarTodayButton.addEventListener("click", function () {
-      var state = loadState();
-      state.calendarOffset = 0;
-      state.calendarSelection = getTodayKey();
-      saveState(state);
-      render();
-    });
-  }
-
-  if (calendarGrid) {
-    calendarGrid.addEventListener("click", function (event) {
-      var dayButton = event.target.closest(".calendar-day");
-      if (!dayButton || dayButton.classList.contains("is-empty")) return;
-      var dateKey = dayButton.getAttribute("data-date");
-      if (!dateKey) return;
-      var state = loadState();
-      state.calendarSelection = dateKey;
-      saveState(state);
-      render();
-    });
-  }
-
-  if (calendarNoteSave) {
-    calendarNoteSave.addEventListener("click", function () {
-      var state = loadState();
-      var targetDate = state.calendarSelection || getTodayKey();
-      state.calendarNotes = state.calendarNotes || {};
-      var text = (calendarNoteInput ? calendarNoteInput.value : "") || "";
-      if (!text.trim()) {
-        delete state.calendarNotes[targetDate];
-      } else {
-        state.calendarNotes[targetDate] = text.trim();
-      }
-      saveState(state);
-      render();
-    });
-  }
-
-  if (calendarNoteTagButtons && calendarNoteTagButtons.length) {
-    Array.prototype.forEach.call(calendarNoteTagButtons, function (button) {
-      button.addEventListener("click", function () {
-        if (!calendarNoteInput || calendarNoteInput.disabled) return;
-        var snippet = button.getAttribute("data-note-tag") || "";
-        if (!snippet) return;
-        var current = calendarNoteInput.value;
-        if (current && current.slice(-1) !== "\n") {
-          current += "\n";
-        }
-        calendarNoteInput.value = current + snippet;
-        calendarNoteInput.focus();
-      });
     });
   }
 
