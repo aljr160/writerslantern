@@ -352,29 +352,6 @@ h2 { font-size: clamp(1.8rem, 4.2vw, 2.4rem); margin-bottom: 10px; }
   cursor: pointer;
   transition: transform 140ms ease, box-shadow 140ms ease, opacity 140ms ease;
 }
-.agenda-intro {
-  margin: 8px 0 14px;
-  color: var(--muted);
-}
-.agenda-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 14px;
-  margin-bottom: 12px;
-}
-.agenda-card {
-  border: 1px solid rgba(108, 78, 49, 0.12);
-  border-radius: 18px;
-  padding: 14px;
-  background: rgba(255, 250, 245, 0.8);
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-.agenda-card h3 {
-  margin: 0;
-  font-size: 1.1rem;
-}
 .agenda-field {
   width: 100%;
   border: 1px solid rgba(108, 78, 49, 0.18);
@@ -387,10 +364,6 @@ h2 { font-size: clamp(1.8rem, 4.2vw, 2.4rem); margin-bottom: 10px; }
 .agenda-field.is-saved {
   border-color: rgba(23, 125, 61, 0.6);
   box-shadow: 0 0 0 2px rgba(23, 125, 61, 0.1);
-}
-.agenda-actions {
-  display: flex;
-  justify-content: flex-end;
 }
 .agenda-chips {
   border-top: 1px solid rgba(108, 78, 49, 0.12);
@@ -500,7 +473,17 @@ h2 { font-size: clamp(1.8rem, 4.2vw, 2.4rem); margin-bottom: 10px; }
   flex-direction: column;
   gap: 10px;
 }
+.planner-chips {
+  border-top: 0;
+  padding-top: 0;
+}
 .planner-note-input {
+  width: 100%;
+  border: 1px solid rgba(108, 78, 49, 0.18);
+  border-radius: 12px;
+  padding: 10px 12px;
+  font: inherit;
+  resize: vertical;
   min-height: 90px;
 }
 .planner-note-actions {
@@ -667,58 +650,6 @@ h2 { font-size: clamp(1.8rem, 4.2vw, 2.4rem); margin-bottom: 10px; }
           </div>
         </section>
 
-        <section class="panel panel-soft" aria-labelledby="agenda-heading">
-          <div class="panel-header-row">
-            <div>
-              <p class="panel-label">Light agenda</p>
-              <h2 id="agenda-heading">Keep three things in view</h2>
-            </div>
-          </div>
-          <p class="agenda-intro">Pin the one thing that matters today, what’s coming tomorrow, and whatever deadline or idea is looming.</p>
-          <div class="agenda-grid">
-            <article class="agenda-card">
-              <header>
-                <p class="panel-label">Today</p>
-                <h3>Today</h3>
-              </header>
-              <textarea class="agenda-field" data-agenda-slot="today" rows="2" placeholder="Tiny target, reminder, or focus."></textarea>
-              <div class="agenda-actions">
-                <button class="secondary-button agenda-save-button" type="button" data-agenda-slot="today">Save today</button>
-              </div>
-            </article>
-            <article class="agenda-card">
-              <header>
-                <p class="panel-label">Tomorrow</p>
-                <h3>Tomorrow</h3>
-              </header>
-              <textarea class="agenda-field" data-agenda-slot="tomorrow" rows="2" placeholder="Set up your next step."></textarea>
-              <div class="agenda-actions">
-                <button class="secondary-button agenda-save-button" type="button" data-agenda-slot="tomorrow">Save tomorrow</button>
-              </div>
-            </article>
-            <article class="agenda-card">
-              <header>
-                <p class="panel-label">Upcoming</p>
-                <h3>Upcoming</h3>
-              </header>
-              <textarea class="agenda-field" data-agenda-slot="upcoming" rows="2" placeholder="Deadline, deliverable, or idea to watch."></textarea>
-              <div class="agenda-actions">
-                <button class="secondary-button agenda-save-button" type="button" data-agenda-slot="upcoming">Save upcoming</button>
-              </div>
-            </article>
-          </div>
-          <div class="agenda-chips">
-            <p class="panel-label">Quick note starters</p>
-            <div class="agenda-chip-list">
-              <button type="button" class="agenda-chip" data-agenda-chip="Deadline: ">Deadline</button>
-              <button type="button" class="agenda-chip" data-agenda-chip="Word-count goal: ">Word-count goal</button>
-              <button type="button" class="agenda-chip" data-agenda-chip="Scene to touch: ">Scene to touch</button>
-              <button type="button" class="agenda-chip" data-agenda-chip="Idea spark: ">Idea spark</button>
-              <button type="button" class="agenda-chip" data-agenda-chip="Reminder: ">Reminder</button>
-            </div>
-          </div>
-        </section>
-
         <section class="panel panel-soft" aria-labelledby="planner-calendar-heading">
           <div class="panel-header-row">
             <div>
@@ -738,11 +669,18 @@ h2 { font-size: clamp(1.8rem, 4.2vw, 2.4rem); margin-bottom: 10px; }
             <div id="planner-calendar-grid" class="planner-calendar-grid" role="grid" aria-live="polite"></div>
             <div class="planner-note-panel">
               <p id="planner-note-label" class="planner-note-label">Note for selected date</p>
-              <textarea id="planner-note-input" class="agenda-field planner-note-input" rows="3" placeholder="Add a deadline, reminder, recap, or idea for this date."></textarea>
+              <div class="agenda-chips planner-chips">
+                <p class="panel-label">Quick note starters</p>
+                <div class="agenda-chip-list">
+                  <button type="button" class="agenda-chip" data-agenda-chip="Deadline: ">Deadline</button>
+                  <button type="button" class="agenda-chip" data-agenda-chip="Word-count goal: ">Word-count goal</button>
+                  <button type="button" class="agenda-chip" data-agenda-chip="Scene to touch: ">Scene to touch</button>
+                  <button type="button" class="agenda-chip" data-agenda-chip="Idea spark: ">Idea spark</button>
+                  <button type="button" class="agenda-chip" data-agenda-chip="Reminder: ">Reminder</button>
+                </div>
+              </div>
+              <textarea id="planner-note-input" class="planner-note-input" rows="3" placeholder="Add a deadline, reminder, recap, or idea for this date."></textarea>
               <div class="planner-note-actions">
-                <button class="secondary-button planner-agenda-import" type="button" data-agenda-import="today">Use Today</button>
-                <button class="secondary-button planner-agenda-import" type="button" data-agenda-import="tomorrow">Use Tomorrow</button>
-                <button class="secondary-button planner-agenda-import" type="button" data-agenda-import="upcoming">Use Upcoming</button>
                 <button id="planner-note-save" class="secondary-button" type="button">Save note to date</button>
               </div>
             </div>
@@ -3797,7 +3735,6 @@ function renderBuilders(state) {
   var plannerCalendarGrid = document.getElementById("planner-calendar-grid");
   var plannerNoteInput = document.getElementById("planner-note-input");
   var plannerNoteSave = document.getElementById("planner-note-save");
-  var plannerAgendaImportButtons = document.querySelectorAll(".planner-agenda-import");
 
   function persistAgendaSlot(slot, value) {
     var safeSlot = slot || "today";
@@ -3921,8 +3858,11 @@ function renderBuilders(state) {
       chip.addEventListener("click", function () {
         var snippet = chip.getAttribute("data-agenda-chip") || "";
         if (!snippet) return;
-        var slot = agendaActiveSlot || "today";
-        var field = document.querySelector('.agenda-field[data-agenda-slot="' + slot + '"]');
+        var field = plannerNoteInput;
+        if (!field) {
+          var slot = agendaActiveSlot || "today";
+          field = document.querySelector('.agenda-field[data-agenda-slot="' + slot + '"]');
+        }
         if (!field) return;
         var current = field.value;
         if (current && current.slice(-1) !== "\n") {
@@ -3976,21 +3916,6 @@ function renderBuilders(state) {
       }
       saveState(state);
       render();
-    });
-  }
-
-  if (plannerAgendaImportButtons && plannerAgendaImportButtons.length) {
-    Array.prototype.forEach.call(plannerAgendaImportButtons, function (button) {
-      button.addEventListener("click", function () {
-        if (!plannerNoteInput) return;
-        var state = loadState();
-        var slot = button.getAttribute("data-agenda-import") || "today";
-        var agenda = normalizeAgenda(state.agenda);
-        var snippet = agenda[slot] || "";
-        if (!snippet) return;
-        plannerNoteInput.value = snippet;
-        plannerNoteInput.focus();
-      });
     });
   }
 
