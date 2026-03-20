@@ -352,11 +352,78 @@ h2 { font-size: clamp(1.8rem, 4.2vw, 2.4rem); margin-bottom: 10px; }
   cursor: pointer;
   transition: transform 140ms ease, box-shadow 140ms ease, opacity 140ms ease;
 }
+.agenda-intro {
+  margin: 8px 0 14px;
+  color: var(--muted);
+}
+.agenda-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 14px;
+  margin-bottom: 12px;
+}
+.agenda-card {
+  border: 1px solid rgba(108, 78, 49, 0.12);
+  border-radius: 18px;
+  padding: 14px;
+  background: rgba(255, 250, 245, 0.8);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.agenda-card h3 {
+  margin: 0;
+  font-size: 1.1rem;
+}
+.agenda-field {
+  width: 100%;
+  border: 1px solid rgba(108, 78, 49, 0.18);
+  border-radius: 12px;
+  padding: 10px 12px;
+  font: inherit;
+  resize: vertical;
+  min-height: 60px;
+}
+.agenda-field.is-saved {
+  border-color: rgba(23, 125, 61, 0.6);
+  box-shadow: 0 0 0 2px rgba(23, 125, 61, 0.1);
+}
+.agenda-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+.agenda-chips {
+  border-top: 1px solid rgba(108, 78, 49, 0.12);
+  padding-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.agenda-chip-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.agenda-chip {
+  border: 1px solid rgba(108, 78, 49, 0.2);
+  border-radius: 999px;
+  padding: 5px 12px;
+  background: rgba(255, 250, 245, 0.9);
+  font-size: 0.82rem;
+  cursor: pointer;
+}
 .checkin-button:hover:not(:disabled), .checkin-button:focus-visible:not(:disabled) {
   transform: translateY(-1px);
   box-shadow: 0 18px 34px rgba(143, 67, 35, 0.28);
 }
 .checkin-button:disabled { cursor: default; opacity: 0.72; }
+@keyframes panelFlash {
+  from { box-shadow: 0 0 0 0 rgba(162, 82, 47, 0.22); }
+  to { box-shadow: none; }
+}
+.checklist-content:not(.is-collapsed) {
+  animation: panelFlash 260ms ease;
+}
 @media (max-width: 720px) {
   .card { padding: 24px; }
   .top-nav { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -393,7 +460,7 @@ h2 { font-size: clamp(1.8rem, 4.2vw, 2.4rem); margin-bottom: 10px; }
         <section class="panel panel-soft mood-panel" aria-labelledby="mood-heading">
           <div class="panel-header-row">
             <div>
-              <p class="panel-label">Meet yourself where you are</p>
+              <p class="panel-label">Check in with yourself</p>
               <h2 id="mood-heading">How are you arriving today?</h2>
             </div>
             <button id="mood-reset-button" class="secondary-button icon-button" type="button" aria-label="Clear selected mood" title="Clear selected mood">↺</button>
@@ -415,7 +482,7 @@ h2 { font-size: clamp(1.8rem, 4.2vw, 2.4rem); margin-bottom: 10px; }
         <section class="panel panel-soft" aria-labelledby="writing-type-heading">
           <div class="panel-header-row">
             <div>
-              <p class="panel-label">Choose your lane</p>
+              <p class="panel-label">Aim your energy</p>
               <h2 id="writing-type-heading">What are you writing today?</h2>
             </div>
             <button id="writing-type-reset-button" class="secondary-button icon-button" type="button" aria-label="Clear selected writing type" title="Clear selected writing type">↺</button>
@@ -436,8 +503,8 @@ h2 { font-size: clamp(1.8rem, 4.2vw, 2.4rem); margin-bottom: 10px; }
         <section class="panel panel-soft" aria-labelledby="mode-heading">
           <div class="panel-header-row">
             <div>
-              <p class="panel-label">Writing stage</p>
-              <h2 id="mode-heading">What stage are you in?</h2>
+              <p class="panel-label">Focus for today</p>
+              <h2 id="mode-heading">Where are you in the process?</h2>
             </div>
             <button id="stage-reset-button" class="secondary-button icon-button" type="button" aria-label="Clear selected writing stage" title="Clear selected writing stage">↺</button>
           </div>
@@ -500,6 +567,58 @@ h2 { font-size: clamp(1.8rem, 4.2vw, 2.4rem); margin-bottom: 10px; }
             <p id="streak-text" class="streak-text"></p>
             <p id="checkin-note" class="checkin-note"></p>
             <button id="checkin-button" class="checkin-button" type="button">Mark today's writing moment</button>
+          </div>
+        </section>
+
+        <section class="panel panel-soft" aria-labelledby="agenda-heading">
+          <div class="panel-header-row">
+            <div>
+              <p class="panel-label">Light agenda</p>
+              <h2 id="agenda-heading">Keep three things in view</h2>
+            </div>
+          </div>
+          <p class="agenda-intro">Pin the one thing that matters today, what’s coming tomorrow, and whatever deadline or idea is looming.</p>
+          <div class="agenda-grid">
+            <article class="agenda-card">
+              <header>
+                <p class="panel-label">Today</p>
+                <h3>Today</h3>
+              </header>
+              <textarea class="agenda-field" data-agenda-slot="today" rows="2" placeholder="Tiny target, reminder, or focus."></textarea>
+              <div class="agenda-actions">
+                <button class="secondary-button agenda-save-button" type="button" data-agenda-slot="today">Save today</button>
+              </div>
+            </article>
+            <article class="agenda-card">
+              <header>
+                <p class="panel-label">Tomorrow</p>
+                <h3>Tomorrow</h3>
+              </header>
+              <textarea class="agenda-field" data-agenda-slot="tomorrow" rows="2" placeholder="Set up your next step."></textarea>
+              <div class="agenda-actions">
+                <button class="secondary-button agenda-save-button" type="button" data-agenda-slot="tomorrow">Save tomorrow</button>
+              </div>
+            </article>
+            <article class="agenda-card">
+              <header>
+                <p class="panel-label">Upcoming</p>
+                <h3>Upcoming</h3>
+              </header>
+              <textarea class="agenda-field" data-agenda-slot="upcoming" rows="2" placeholder="Deadline, deliverable, or idea to watch."></textarea>
+              <div class="agenda-actions">
+                <button class="secondary-button agenda-save-button" type="button" data-agenda-slot="upcoming">Save upcoming</button>
+              </div>
+            </article>
+          </div>
+          <div class="agenda-chips">
+            <p class="panel-label">Quick note starters</p>
+            <div class="agenda-chip-list">
+              <button type="button" class="agenda-chip" data-agenda-chip="Deadline: ">Deadline</button>
+              <button type="button" class="agenda-chip" data-agenda-chip="Word-count goal: ">Word-count goal</button>
+              <button type="button" class="agenda-chip" data-agenda-chip="Scene to touch: ">Scene to touch</button>
+              <button type="button" class="agenda-chip" data-agenda-chip="Idea spark: ">Idea spark</button>
+              <button type="button" class="agenda-chip" data-agenda-chip="Reminder: ">Reminder</button>
+            </div>
           </div>
         </section>
       </section>
@@ -1084,6 +1203,19 @@ window.WRITER_LANTERN_DATA = {
     return value < 10 ? "0" + value : String(value);
   }
 
+  function getEmptyAgenda() {
+    return { today: "", tomorrow: "", upcoming: "" };
+  }
+
+  function normalizeAgenda(value) {
+    var base = getEmptyAgenda();
+    if (!value) return base;
+    base.today = typeof value.today === "string" ? value.today : "";
+    base.tomorrow = typeof value.tomorrow === "string" ? value.tomorrow : "";
+    base.upcoming = typeof value.upcoming === "string" ? value.upcoming : "";
+    return base;
+  }
+
   function getTodayKey() {
     var now = new Date();
     return now.getFullYear() + "-" + padNumber(now.getMonth() + 1) + "-" + padNumber(now.getDate());
@@ -1104,7 +1236,7 @@ window.WRITER_LANTERN_DATA = {
     try {
       var raw = localStorage.getItem(storageKey);
       if (!raw) {
-        return { streak: 0, lastCheckIn: "", mood: defaultMood, writingType: defaultWritingType, mode: "", genre: defaultGenre, page: "home", promptIndex: 0, motivationIndex: 0, checklistOpen: false, templateOpen: false, storyBuilderOpen: false, characterBuilderOpen: false, sceneBuilderOpen: false, firstChapterOpen: false, revisionChecklistOpen: false, plotHoleOpen: false, characterConsistencyOpen: false, problemOpen: false, faqOpen: false, craftGuideOpen: false, termsGuideOpen: false, proTipsOpen: false, completed: {}, checkinHistory: [] };
+        return { streak: 0, lastCheckIn: "", mood: defaultMood, writingType: defaultWritingType, mode: "", genre: defaultGenre, page: "home", promptIndex: 0, motivationIndex: 0, checklistOpen: false, templateOpen: false, storyBuilderOpen: false, characterBuilderOpen: false, sceneBuilderOpen: false, firstChapterOpen: false, revisionChecklistOpen: false, plotHoleOpen: false, characterConsistencyOpen: false, problemOpen: false, faqOpen: false, craftGuideOpen: false, termsGuideOpen: false, proTipsOpen: false, completed: {}, checkinHistory: [], agenda: getEmptyAgenda() };
       }
       var parsed = JSON.parse(raw);
       var history = Array.isArray(parsed.checkinHistory) ? parsed.checkinHistory.filter(Boolean) : [];
@@ -1140,10 +1272,11 @@ window.WRITER_LANTERN_DATA = {
         termsGuideOpen: Boolean(parsed.termsGuideOpen),
         proTipsOpen: Boolean(parsed.proTipsOpen),
         completed: parsed.completed || {},
-        checkinHistory: history
+        checkinHistory: history,
+        agenda: normalizeAgenda(parsed.agenda)
       };
     } catch (error) {
-      return { streak: 0, lastCheckIn: "", mood: defaultMood, writingType: defaultWritingType, mode: "", genre: defaultGenre, page: "home", promptIndex: 0, motivationIndex: 0, checklistOpen: false, templateOpen: false, storyBuilderOpen: false, characterBuilderOpen: false, sceneBuilderOpen: false, firstChapterOpen: false, revisionChecklistOpen: false, plotHoleOpen: false, characterConsistencyOpen: false, problemOpen: false, faqOpen: false, craftGuideOpen: false, termsGuideOpen: false, proTipsOpen: false, completed: {}, checkinHistory: [] };
+      return { streak: 0, lastCheckIn: "", mood: defaultMood, writingType: defaultWritingType, mode: "", genre: defaultGenre, page: "home", promptIndex: 0, motivationIndex: 0, checklistOpen: false, templateOpen: false, storyBuilderOpen: false, characterBuilderOpen: false, sceneBuilderOpen: false, firstChapterOpen: false, revisionChecklistOpen: false, plotHoleOpen: false, characterConsistencyOpen: false, problemOpen: false, faqOpen: false, craftGuideOpen: false, termsGuideOpen: false, proTipsOpen: false, completed: {}, checkinHistory: [], agenda: getEmptyAgenda() };
     }
   }
 
@@ -1818,6 +1951,7 @@ window.WRITER_LANTERN_DATA = {
       var isActive = button.getAttribute("data-page") === state.page;
       button.classList.toggle("is-active", isActive);
       button.setAttribute("aria-pressed", isActive ? "true" : "false");
+      button.setAttribute("aria-current", isActive ? "page" : "false");
     });
   }
 
@@ -3300,6 +3434,14 @@ function renderBuilders(state) {
     }).join("");
   }
 
+  function renderAgenda(state) {
+    var agenda = normalizeAgenda(state.agenda);
+    Array.prototype.forEach.call(document.querySelectorAll(".agenda-field"), function (field) {
+      var slot = field.getAttribute("data-agenda-slot") || "today";
+      field.value = agenda[slot] || "";
+    });
+  }
+
   function updateMoodButtons(activeMood) {
     Array.prototype.forEach.call(document.querySelectorAll(".mood-button"), function (button) {
       var isActive = activeMood && button.getAttribute("data-mood") === activeMood;
@@ -3357,6 +3499,7 @@ function renderBuilders(state) {
     renderTemplates(state);
     renderChecklist(state);
     renderFaq(state);
+    renderAgenda(state);
 
     var motivationEl = document.getElementById("motivation-message");
     var promptHeadingEl = document.getElementById("prompt-heading");
@@ -3468,6 +3611,27 @@ function renderBuilders(state) {
   var proTipsToggle = document.getElementById("pro-tips-toggle");
   var backToTopButton = document.getElementById("back-to-top");
   var checkinButton = document.getElementById("checkin-button");
+  var agendaFields = document.querySelectorAll(".agenda-field");
+  var agendaSaveButtons = document.querySelectorAll(".agenda-save-button");
+  var agendaChips = document.querySelectorAll(".agenda-chip");
+  var agendaActiveSlot = "today";
+
+  function persistAgendaSlot(slot, value) {
+    var safeSlot = slot || "today";
+    var state = loadState();
+    state.agenda = normalizeAgenda(state.agenda);
+    state.agenda[safeSlot] = (value || "").trim();
+    saveState(state);
+    requestAnimationFrame(function () {
+      var field = document.querySelector('.agenda-field[data-agenda-slot="' + safeSlot + '"]');
+      if (field) {
+        field.classList.add("is-saved");
+        setTimeout(function () { field.classList.remove("is-saved"); }, 900);
+      }
+    });
+    render();
+  }
+
   if (generateButton) {
     generateButton.addEventListener("click", function () {
       var state = loadState();
@@ -3549,6 +3713,44 @@ function renderBuilders(state) {
   }
 
 
+  if (agendaFields && agendaFields.length) {
+    Array.prototype.forEach.call(agendaFields, function (field) {
+      var slot = field.getAttribute("data-agenda-slot") || "today";
+      field.addEventListener("focus", function () {
+        agendaActiveSlot = slot;
+      });
+    });
+  }
+
+  if (agendaSaveButtons && agendaSaveButtons.length) {
+    Array.prototype.forEach.call(agendaSaveButtons, function (button) {
+      button.addEventListener("click", function () {
+        var slot = button.getAttribute("data-agenda-slot") || agendaActiveSlot;
+        var field = document.querySelector('.agenda-field[data-agenda-slot="' + slot + '"]');
+        if (!field) return;
+        persistAgendaSlot(slot, field.value);
+      });
+    });
+  }
+
+  if (agendaChips && agendaChips.length) {
+    Array.prototype.forEach.call(agendaChips, function (chip) {
+      chip.addEventListener("click", function () {
+        var snippet = chip.getAttribute("data-agenda-chip") || "";
+        if (!snippet) return;
+        var slot = agendaActiveSlot || "today";
+        var field = document.querySelector('.agenda-field[data-agenda-slot="' + slot + '"]');
+        if (!field) return;
+        var current = field.value;
+        if (current && current.slice(-1) !== "\n") {
+          current += "\n";
+        }
+        field.value = current + snippet;
+        field.focus();
+      });
+    });
+  }
+
   if (checklistToggle) {
     checklistToggle.addEventListener("click", function (event) {
       event.preventDefault();
@@ -3572,6 +3774,7 @@ function renderBuilders(state) {
       state.genre = "";
       state.promptIndex = 0;
       state.motivationIndex = 0;
+      state.agenda = getEmptyAgenda();
       // close panels
       state.checklistOpen = false;
       state.templateOpen = false;
