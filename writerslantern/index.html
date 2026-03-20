@@ -412,6 +412,103 @@ h2 { font-size: clamp(1.8rem, 4.2vw, 2.4rem); margin-bottom: 10px; }
   font-size: 0.82rem;
   cursor: pointer;
 }
+.planner-calendar {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.planner-calendar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.planner-calendar-title-wrap {
+  flex: 1;
+  text-align: center;
+}
+.planner-calendar-title {
+  font-weight: 700;
+}
+.planner-calendar-subtitle,
+.planner-note-label {
+  margin: 4px 0 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+.calendar-nav {
+  border: 1px solid rgba(108, 78, 49, 0.2);
+  background: rgba(255, 250, 245, 0.9);
+  color: var(--muted);
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  cursor: pointer;
+}
+.planner-calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 6px;
+}
+.planner-calendar-day-name {
+  text-align: center;
+  font-size: 0.74rem;
+  font-weight: 700;
+  color: var(--muted);
+}
+.planner-calendar-day {
+  border: 1px solid rgba(108, 78, 49, 0.12);
+  border-radius: 12px;
+  min-height: 42px;
+  background: rgba(255, 250, 245, 0.82);
+  cursor: pointer;
+  font: inherit;
+  color: var(--ink);
+  position: relative;
+}
+.planner-calendar-day.is-empty {
+  visibility: hidden;
+}
+.planner-calendar-day.is-today {
+  border-color: var(--accent);
+}
+.planner-calendar-day.is-selected {
+  box-shadow: 0 0 0 2px rgba(162, 82, 47, 0.18);
+  border-color: var(--accent);
+}
+.planner-calendar-day.is-logged {
+  background: rgba(27, 143, 60, 0.14);
+  border-color: rgba(27, 143, 60, 0.3);
+}
+.planner-calendar-day.has-note::after {
+  content: "";
+  position: absolute;
+  bottom: 5px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent-strong);
+}
+.planner-note-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.planner-note-input {
+  min-height: 90px;
+}
+.planner-note-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: flex-end;
+}
 .checkin-button:hover:not(:disabled), .checkin-button:focus-visible:not(:disabled) {
   transform: translateY(-1px);
   box-shadow: 0 18px 34px rgba(143, 67, 35, 0.28);
@@ -618,6 +715,36 @@ h2 { font-size: clamp(1.8rem, 4.2vw, 2.4rem); margin-bottom: 10px; }
               <button type="button" class="agenda-chip" data-agenda-chip="Scene to touch: ">Scene to touch</button>
               <button type="button" class="agenda-chip" data-agenda-chip="Idea spark: ">Idea spark</button>
               <button type="button" class="agenda-chip" data-agenda-chip="Reminder: ">Reminder</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel panel-soft" aria-labelledby="planner-calendar-heading">
+          <div class="panel-header-row">
+            <div>
+              <p class="panel-label">Planner calendar</p>
+              <h2 id="planner-calendar-heading">Pick a date and save a note</h2>
+            </div>
+          </div>
+          <div class="planner-calendar">
+            <div class="planner-calendar-header">
+              <button id="calendar-prev" class="calendar-nav" type="button" aria-label="Previous month">←</button>
+              <div class="planner-calendar-title-wrap">
+                <div id="planner-calendar-title" class="planner-calendar-title"></div>
+                <p id="planner-calendar-subtitle" class="planner-calendar-subtitle">Select a date for a reminder, deadline, or idea.</p>
+              </div>
+              <button id="calendar-next" class="calendar-nav" type="button" aria-label="Next month">→</button>
+            </div>
+            <div id="planner-calendar-grid" class="planner-calendar-grid" role="grid" aria-live="polite"></div>
+            <div class="planner-note-panel">
+              <p id="planner-note-label" class="planner-note-label">Note for selected date</p>
+              <textarea id="planner-note-input" class="agenda-field planner-note-input" rows="3" placeholder="Add a deadline, reminder, recap, or idea for this date."></textarea>
+              <div class="planner-note-actions">
+                <button class="secondary-button planner-agenda-import" type="button" data-agenda-import="today">Use Today</button>
+                <button class="secondary-button planner-agenda-import" type="button" data-agenda-import="tomorrow">Use Tomorrow</button>
+                <button class="secondary-button planner-agenda-import" type="button" data-agenda-import="upcoming">Use Upcoming</button>
+                <button id="planner-note-save" class="secondary-button" type="button">Save note to date</button>
+              </div>
             </div>
           </div>
         </section>
@@ -1236,7 +1363,7 @@ window.WRITER_LANTERN_DATA = {
     try {
       var raw = localStorage.getItem(storageKey);
       if (!raw) {
-        return { streak: 0, lastCheckIn: "", mood: defaultMood, writingType: defaultWritingType, mode: "", genre: defaultGenre, page: "home", promptIndex: 0, motivationIndex: 0, checklistOpen: false, templateOpen: false, storyBuilderOpen: false, characterBuilderOpen: false, sceneBuilderOpen: false, firstChapterOpen: false, revisionChecklistOpen: false, plotHoleOpen: false, characterConsistencyOpen: false, problemOpen: false, faqOpen: false, craftGuideOpen: false, termsGuideOpen: false, proTipsOpen: false, completed: {}, checkinHistory: [], agenda: getEmptyAgenda() };
+        return { streak: 0, lastCheckIn: "", mood: defaultMood, writingType: defaultWritingType, mode: "", genre: defaultGenre, page: "home", promptIndex: 0, motivationIndex: 0, checklistOpen: false, templateOpen: false, storyBuilderOpen: false, characterBuilderOpen: false, sceneBuilderOpen: false, firstChapterOpen: false, revisionChecklistOpen: false, plotHoleOpen: false, characterConsistencyOpen: false, problemOpen: false, faqOpen: false, craftGuideOpen: false, termsGuideOpen: false, proTipsOpen: false, completed: {}, checkinHistory: [], agenda: getEmptyAgenda(), calendarOffset: 0, calendarSelection: getTodayKey(), calendarNotes: {} };
       }
       var parsed = JSON.parse(raw);
       var history = Array.isArray(parsed.checkinHistory) ? parsed.checkinHistory.filter(Boolean) : [];
@@ -1273,10 +1400,13 @@ window.WRITER_LANTERN_DATA = {
         proTipsOpen: Boolean(parsed.proTipsOpen),
         completed: parsed.completed || {},
         checkinHistory: history,
-        agenda: normalizeAgenda(parsed.agenda)
+        agenda: normalizeAgenda(parsed.agenda),
+        calendarOffset: Number(parsed.calendarOffset) || 0,
+        calendarSelection: typeof parsed.calendarSelection === "string" && parsed.calendarSelection ? parsed.calendarSelection : getTodayKey(),
+        calendarNotes: parsed.calendarNotes || {}
       };
     } catch (error) {
-      return { streak: 0, lastCheckIn: "", mood: defaultMood, writingType: defaultWritingType, mode: "", genre: defaultGenre, page: "home", promptIndex: 0, motivationIndex: 0, checklistOpen: false, templateOpen: false, storyBuilderOpen: false, characterBuilderOpen: false, sceneBuilderOpen: false, firstChapterOpen: false, revisionChecklistOpen: false, plotHoleOpen: false, characterConsistencyOpen: false, problemOpen: false, faqOpen: false, craftGuideOpen: false, termsGuideOpen: false, proTipsOpen: false, completed: {}, checkinHistory: [], agenda: getEmptyAgenda() };
+      return { streak: 0, lastCheckIn: "", mood: defaultMood, writingType: defaultWritingType, mode: "", genre: defaultGenre, page: "home", promptIndex: 0, motivationIndex: 0, checklistOpen: false, templateOpen: false, storyBuilderOpen: false, characterBuilderOpen: false, sceneBuilderOpen: false, firstChapterOpen: false, revisionChecklistOpen: false, plotHoleOpen: false, characterConsistencyOpen: false, problemOpen: false, faqOpen: false, craftGuideOpen: false, termsGuideOpen: false, proTipsOpen: false, completed: {}, checkinHistory: [], agenda: getEmptyAgenda(), calendarOffset: 0, calendarSelection: getTodayKey(), calendarNotes: {} };
     }
   }
 
@@ -3442,6 +3572,52 @@ function renderBuilders(state) {
     });
   }
 
+  function getCalendarMonthDate(offset) {
+    var d = new Date();
+    d.setDate(1);
+    d.setMonth(d.getMonth() + offset);
+    return d;
+  }
+
+  function renderPlannerCalendar(state) {
+    var title = document.getElementById("planner-calendar-title");
+    var subtitle = document.getElementById("planner-calendar-subtitle");
+    var grid = document.getElementById("planner-calendar-grid");
+    var input = document.getElementById("planner-note-input");
+    var label = document.getElementById("planner-note-label");
+    if (!title || !subtitle || !grid || !input || !label) return;
+    var offset = Number(state.calendarOffset) || 0;
+    if (offset < -24) offset = -24;
+    if (offset > 24) offset = 24;
+    var displayDate = getCalendarMonthDate(offset);
+    var year = displayDate.getFullYear();
+    var month = displayDate.getMonth();
+    var firstDay = new Date(year, month, 1).getDay();
+    var daysInMonth = new Date(year, month + 1, 0).getDate();
+    var todayKey = getTodayKey();
+    var selectedDate = state.calendarSelection || todayKey;
+    var notes = state.calendarNotes || {};
+    var loggedMap = {};
+    (state.checkinHistory || []).forEach(function (date) { loggedMap[String(date)] = true; });
+    title.textContent = ["January","February","March","April","May","June","July","August","September","October","November","December"][month] + " " + year;
+    subtitle.textContent = "Selected: " + selectedDate;
+    label.textContent = "Note for " + selectedDate;
+    input.value = notes[selectedDate] || "";
+    var names = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+    var html = names.map(function (name) { return '<span class="planner-calendar-day-name">' + name + '</span>'; }).join("");
+    for (var i = 0; i < firstDay; i++) html += '<span class="planner-calendar-day is-empty"></span>';
+    for (var day = 1; day <= daysInMonth; day++) {
+      var key = year + "-" + padNumber(month + 1) + "-" + padNumber(day);
+      var classes = ["planner-calendar-day"];
+      if (key === todayKey) classes.push("is-today");
+      if (key === selectedDate) classes.push("is-selected");
+      if (loggedMap[key]) classes.push("is-logged");
+      if (notes[key]) classes.push("has-note");
+      html += '<button type="button" class="' + classes.join(" ") + '" data-calendar-date="' + key + '">' + day + '</button>';
+    }
+    grid.innerHTML = html;
+  }
+
   function updateMoodButtons(activeMood) {
     Array.prototype.forEach.call(document.querySelectorAll(".mood-button"), function (button) {
       var isActive = activeMood && button.getAttribute("data-mood") === activeMood;
@@ -3500,6 +3676,7 @@ function renderBuilders(state) {
     renderChecklist(state);
     renderFaq(state);
     renderAgenda(state);
+    renderPlannerCalendar(state);
 
     var motivationEl = document.getElementById("motivation-message");
     var promptHeadingEl = document.getElementById("prompt-heading");
@@ -3615,6 +3792,12 @@ function renderBuilders(state) {
   var agendaSaveButtons = document.querySelectorAll(".agenda-save-button");
   var agendaChips = document.querySelectorAll(".agenda-chip");
   var agendaActiveSlot = "today";
+  var calendarPrevButton = document.getElementById("calendar-prev");
+  var calendarNextButton = document.getElementById("calendar-next");
+  var plannerCalendarGrid = document.getElementById("planner-calendar-grid");
+  var plannerNoteInput = document.getElementById("planner-note-input");
+  var plannerNoteSave = document.getElementById("planner-note-save");
+  var plannerAgendaImportButtons = document.querySelectorAll(".planner-agenda-import");
 
   function persistAgendaSlot(slot, value) {
     var safeSlot = slot || "today";
@@ -3751,6 +3934,66 @@ function renderBuilders(state) {
     });
   }
 
+  if (calendarPrevButton) {
+    calendarPrevButton.addEventListener("click", function () {
+      var state = loadState();
+      state.calendarOffset = Math.max(-24, (state.calendarOffset || 0) - 1);
+      saveState(state);
+      render();
+    });
+  }
+
+  if (calendarNextButton) {
+    calendarNextButton.addEventListener("click", function () {
+      var state = loadState();
+      state.calendarOffset = Math.min(24, (state.calendarOffset || 0) + 1);
+      saveState(state);
+      render();
+    });
+  }
+
+  if (plannerCalendarGrid) {
+    plannerCalendarGrid.addEventListener("click", function (event) {
+      var button = event.target.closest("button[data-calendar-date]");
+      if (!button) return;
+      var state = loadState();
+      state.calendarSelection = button.getAttribute("data-calendar-date") || getTodayKey();
+      saveState(state);
+      render();
+    });
+  }
+
+  if (plannerNoteSave) {
+    plannerNoteSave.addEventListener("click", function () {
+      var state = loadState();
+      var selected = state.calendarSelection || getTodayKey();
+      state.calendarNotes = state.calendarNotes || {};
+      var value = plannerNoteInput ? plannerNoteInput.value : "";
+      if (!value || !value.trim()) {
+        delete state.calendarNotes[selected];
+      } else {
+        state.calendarNotes[selected] = value.trim();
+      }
+      saveState(state);
+      render();
+    });
+  }
+
+  if (plannerAgendaImportButtons && plannerAgendaImportButtons.length) {
+    Array.prototype.forEach.call(plannerAgendaImportButtons, function (button) {
+      button.addEventListener("click", function () {
+        if (!plannerNoteInput) return;
+        var state = loadState();
+        var slot = button.getAttribute("data-agenda-import") || "today";
+        var agenda = normalizeAgenda(state.agenda);
+        var snippet = agenda[slot] || "";
+        if (!snippet) return;
+        plannerNoteInput.value = snippet;
+        plannerNoteInput.focus();
+      });
+    });
+  }
+
   if (checklistToggle) {
     checklistToggle.addEventListener("click", function (event) {
       event.preventDefault();
@@ -3775,6 +4018,8 @@ function renderBuilders(state) {
       state.promptIndex = 0;
       state.motivationIndex = 0;
       state.agenda = getEmptyAgenda();
+      state.calendarSelection = getTodayKey();
+      state.calendarOffset = 0;
       // close panels
       state.checklistOpen = false;
       state.templateOpen = false;
