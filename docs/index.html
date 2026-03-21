@@ -544,22 +544,28 @@ h2 { font-size: clamp(1.8rem, 4.2vw, 2.4rem); margin-bottom: 10px; }
   }
   .top-nav {
     top: 8px;
-    grid-template-columns: repeat(5, minmax(0, 1fr));
-    gap: 6px;
-    padding: 6px;
+    display: flex;
+    overflow-x: auto;
+    gap: 8px;
+    padding: 8px;
     border-radius: 16px;
+    scroll-snap-type: x proximity;
+    -webkit-overflow-scrolling: touch;
   }
   .nav-button {
-    min-height: 62px;
-    font-size: 0.76rem;
-    padding: 8px 4px;
+    flex: 0 0 auto;
+    min-width: 92px;
+    min-height: 58px;
+    font-size: 0.8rem;
+    padding: 8px 8px;
     flex-direction: column;
     gap: 4px;
+    scroll-snap-align: start;
   }
   .nav-icon { font-size: 0.95rem; }
   .panel,
   .checkin-row {
-    padding: 16px;
+    padding: 15px;
     margin-top: 12px;
     border-radius: 18px;
   }
@@ -569,7 +575,14 @@ h2 { font-size: clamp(1.8rem, 4.2vw, 2.4rem); margin-bottom: 10px; }
     justify-content: space-between;
     gap: 10px;
   }
-  h2 { line-height: 1.05; }
+  h2 {
+    line-height: 1.05;
+    font-size: clamp(1.55rem, 7vw, 2.05rem);
+    margin-bottom: 6px;
+  }
+  .checklist-toggle-icon {
+    font-size: 1.55rem;
+  }
   .page-intro,
   .intro,
   .motivation-message,
@@ -577,6 +590,12 @@ h2 { font-size: clamp(1.8rem, 4.2vw, 2.4rem); margin-bottom: 10px; }
   .streak-text,
   .checkin-note { font-size: 0.97rem; }
   .mood-picker {
+    gap: 8px;
+  }
+  .checkin-row {
+    gap: 12px;
+  }
+  .checkin-content {
     gap: 8px;
   }
   .mood-button,
