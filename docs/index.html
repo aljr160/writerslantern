@@ -563,7 +563,12 @@ h2 { font-size: clamp(1.8rem, 4.2vw, 2.4rem); margin-bottom: 10px; }
     margin-top: 12px;
     border-radius: 18px;
   }
-  .panel-header-row { align-items: stretch; flex-direction: column; gap: 10px; }
+  .panel-header-row {
+    align-items: flex-start;
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 10px;
+  }
   h2 { line-height: 1.05; }
   .page-intro,
   .intro,
