@@ -524,6 +524,12 @@ h2 { font-size: clamp(1.8rem, 4.2vw, 2.4rem); margin-bottom: 10px; }
   gap: 8px;
   justify-content: flex-end;
 }
+.planner-session-status {
+  margin: 2px 0 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1.45;
+}
 .checkin-button:hover:not(:disabled), .checkin-button:focus-visible:not(:disabled) {
   transform: translateY(-1px);
   box-shadow: 0 18px 34px rgba(143, 67, 35, 0.28);
@@ -799,7 +805,10 @@ h2 { font-size: clamp(1.8rem, 4.2vw, 2.4rem); margin-bottom: 10px; }
               <textarea id="planner-note-input" class="planner-note-input" rows="3" placeholder="Add a deadline, reminder, recap, or idea for this date."></textarea>
               <div class="planner-note-actions">
                 <button id="planner-note-save" class="secondary-button" type="button">Save note to date</button>
+                <button id="planner-session-save" class="secondary-button" type="button">Save session for later</button>
+                <button id="planner-session-restart" class="secondary-button" type="button">Save + start fresh</button>
               </div>
+              <p id="planner-session-status" class="planner-session-status">Saved sessions stay on this device so you can hand off or start a new chapter without wiping the old one.</p>
             </div>
           </div>
         </section>
@@ -1398,6 +1407,13 @@ window.WRITER_LANTERN_DATA = {
     return base;
   }
 
+  function normalizeSavedSessions(value) {
+    if (!Array.isArray(value)) return [];
+    return value.filter(function (item) {
+      return item && typeof item === "object" && item.savedAt;
+    }).slice(-12);
+  }
+
   function getTodayKey() {
     var now = new Date();
     return now.getFullYear() + "-" + padNumber(now.getMonth() + 1) + "-" + padNumber(now.getDate());
@@ -1418,7 +1434,7 @@ window.WRITER_LANTERN_DATA = {
     try {
       var raw = localStorage.getItem(storageKey);
       if (!raw) {
-        return { streak: 0, lastCheckIn: "", mood: defaultMood, writingType: defaultWritingType, mode: "", genre: defaultGenre, page: "home", promptIndex: 0, motivationIndex: 0, checklistOpen: false, templateOpen: false, storyBuilderOpen: false, characterBuilderOpen: false, sceneBuilderOpen: false, firstChapterOpen: false, revisionChecklistOpen: false, plotHoleOpen: false, characterConsistencyOpen: false, problemOpen: false, faqOpen: false, craftGuideOpen: false, termsGuideOpen: false, proTipsOpen: false, completed: {}, checkinHistory: [], agenda: getEmptyAgenda(), calendarOffset: 0, calendarSelection: getTodayKey(), calendarNotes: {} };
+        return { streak: 0, lastCheckIn: "", mood: defaultMood, writingType: defaultWritingType, mode: "", genre: defaultGenre, page: "home", promptIndex: 0, motivationIndex: 0, checklistOpen: false, templateOpen: false, storyBuilderOpen: false, characterBuilderOpen: false, sceneBuilderOpen: false, firstChapterOpen: false, revisionChecklistOpen: false, plotHoleOpen: false, characterConsistencyOpen: false, problemOpen: false, faqOpen: false, craftGuideOpen: false, termsGuideOpen: false, proTipsOpen: false, completed: {}, checkinHistory: [], agenda: getEmptyAgenda(), calendarOffset: 0, calendarSelection: getTodayKey(), calendarNotes: {}, savedSessions: [] };
       }
       var parsed = JSON.parse(raw);
       var history = Array.isArray(parsed.checkinHistory) ? parsed.checkinHistory.filter(Boolean) : [];
@@ -1458,10 +1474,11 @@ window.WRITER_LANTERN_DATA = {
         agenda: normalizeAgenda(parsed.agenda),
         calendarOffset: Number(parsed.calendarOffset) || 0,
         calendarSelection: typeof parsed.calendarSelection === "string" && parsed.calendarSelection ? parsed.calendarSelection : getTodayKey(),
-        calendarNotes: parsed.calendarNotes || {}
+        calendarNotes: parsed.calendarNotes || {},
+        savedSessions: normalizeSavedSessions(parsed.savedSessions)
       };
     } catch (error) {
-      return { streak: 0, lastCheckIn: "", mood: defaultMood, writingType: defaultWritingType, mode: "", genre: defaultGenre, page: "home", promptIndex: 0, motivationIndex: 0, checklistOpen: false, templateOpen: false, storyBuilderOpen: false, characterBuilderOpen: false, sceneBuilderOpen: false, firstChapterOpen: false, revisionChecklistOpen: false, plotHoleOpen: false, characterConsistencyOpen: false, problemOpen: false, faqOpen: false, craftGuideOpen: false, termsGuideOpen: false, proTipsOpen: false, completed: {}, checkinHistory: [], agenda: getEmptyAgenda(), calendarOffset: 0, calendarSelection: getTodayKey(), calendarNotes: {} };
+      return { streak: 0, lastCheckIn: "", mood: defaultMood, writingType: defaultWritingType, mode: "", genre: defaultGenre, page: "home", promptIndex: 0, motivationIndex: 0, checklistOpen: false, templateOpen: false, storyBuilderOpen: false, characterBuilderOpen: false, sceneBuilderOpen: false, firstChapterOpen: false, revisionChecklistOpen: false, plotHoleOpen: false, characterConsistencyOpen: false, problemOpen: false, faqOpen: false, craftGuideOpen: false, termsGuideOpen: false, proTipsOpen: false, completed: {}, checkinHistory: [], agenda: getEmptyAgenda(), calendarOffset: 0, calendarSelection: getTodayKey(), calendarNotes: {}, savedSessions: [] };
     }
   }
 
@@ -3634,6 +3651,53 @@ function renderBuilders(state) {
     return d;
   }
 
+  function resetCurrentSessionState(state) {
+    state.mood = "";
+    state.writingType = "";
+    state.mode = "";
+    state.genre = "";
+    state.promptIndex = 0;
+    state.motivationIndex = 0;
+    state.agenda = getEmptyAgenda();
+    state.calendarSelection = getTodayKey();
+    state.calendarOffset = 0;
+    state.checklistOpen = false;
+    state.templateOpen = false;
+    state.storyBuilderOpen = false;
+    state.characterBuilderOpen = false;
+    state.sceneBuilderOpen = false;
+    state.firstChapterOpen = false;
+    state.revisionChecklistOpen = false;
+    state.plotHoleOpen = false;
+    state.characterConsistencyOpen = false;
+    state.problemOpen = false;
+    state.faqOpen = false;
+    state.craftGuideOpen = false;
+    state.termsGuideOpen = false;
+    state.proTipsOpen = false;
+    state.completed = {};
+    return state;
+  }
+
+  function saveCurrentSessionSnapshot(state) {
+    state.savedSessions = normalizeSavedSessions(state.savedSessions);
+    var snapshot = {
+      savedAt: new Date().toISOString(),
+      mood: state.mood || "",
+      writingType: state.writingType || "",
+      mode: state.mode || "",
+      genre: state.genre || "",
+      streak: state.streak || 0,
+      agenda: normalizeAgenda(state.agenda),
+      calendarSelection: state.calendarSelection || getTodayKey(),
+      calendarNotes: state.calendarNotes || {},
+      checkinHistoryCount: (state.checkinHistory || []).length
+    };
+    state.savedSessions.push(snapshot);
+    state.savedSessions = state.savedSessions.slice(-12);
+    return snapshot;
+  }
+
   function renderPlannerCalendar(state) {
     var title = document.getElementById("planner-calendar-title");
     var subtitle = document.getElementById("planner-calendar-subtitle");
@@ -3740,6 +3804,7 @@ function renderBuilders(state) {
     var streakEl = document.getElementById("streak-text");
     var noteEl = document.getElementById("checkin-note");
     var checkinButton = document.getElementById("checkin-button");
+    var plannerSessionStatus = document.getElementById("planner-session-status");
 
     if (motivationEl) motivationEl.textContent = state.mood ? getMoodMessage(state) : getRotatingItem(data.motivations || [], 1, state.motivationIndex || 0);
     if (promptHeadingEl) promptHeadingEl.textContent = "Daily task";
@@ -3764,6 +3829,16 @@ function renderBuilders(state) {
     if (checkinButton) {
       checkinButton.disabled = view.alreadyCheckedIn;
       checkinButton.textContent = view.alreadyCheckedIn ? "Today's writing moment is logged" : "Mark today's writing moment";
+    }
+    if (plannerSessionStatus) {
+      var savedCount = (state.savedSessions || []).length;
+      if (savedCount) {
+        var latest = state.savedSessions[savedCount - 1];
+        var labelText = latest.savedAt ? new Date(latest.savedAt).toLocaleString() : "just now";
+        plannerSessionStatus.textContent = "Saved sessions on this device: " + savedCount + ". Latest saved " + labelText + ".";
+      } else {
+        plannerSessionStatus.textContent = "Saved sessions stay on this device so you can hand off or start a new chapter without wiping the old one.";
+      }
     }
   }
 
@@ -3852,6 +3927,8 @@ function renderBuilders(state) {
   var plannerCalendarGrid = document.getElementById("planner-calendar-grid");
   var plannerNoteInput = document.getElementById("planner-note-input");
   var plannerNoteSave = document.getElementById("planner-note-save");
+  var plannerSessionSave = document.getElementById("planner-session-save");
+  var plannerSessionRestart = document.getElementById("planner-session-restart");
 
   function persistAgendaSlot(slot, value) {
     var safeSlot = slot || "today";
@@ -4033,6 +4110,29 @@ function renderBuilders(state) {
       }
       saveState(state);
       render();
+    });
+  }
+
+  if (plannerSessionSave) {
+    plannerSessionSave.addEventListener("click", function () {
+      var state = loadState();
+      saveCurrentSessionSnapshot(state);
+      saveState(state);
+      render();
+      window.alert("Session saved for later on this device.");
+    });
+  }
+
+  if (plannerSessionRestart) {
+    plannerSessionRestart.addEventListener("click", function () {
+      var confirmed = window.confirm("Save this session and start fresh? Your current session will be archived on this device, and the active planner will reset for a new person or a new chapter.");
+      if (!confirmed) return;
+      var state = loadState();
+      saveCurrentSessionSnapshot(state);
+      resetCurrentSessionState(state);
+      saveState(state);
+      render();
+      window.alert("Saved for later. A fresh session is ready.");
     });
   }
 
