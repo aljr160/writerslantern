@@ -860,7 +860,6 @@ h2 { font-size: clamp(1.8rem, 4.2vw, 2.4rem); margin-bottom: 10px; }
               <div class="planner-note-actions">
                 <button id="planner-note-save" class="secondary-button" type="button">Save note to date</button>
                 <button id="planner-session-save" class="secondary-button" type="button">Save session for later</button>
-                <button id="planner-session-restart" class="secondary-button" type="button" title="Saves this session, then resets current progress for a fresh start">Save + start fresh</button>
                 <button id="planner-session-fresh" class="secondary-button" type="button" title="Starts fresh without saving this session">Start fresh</button>
               </div>
               <p id="planner-session-status" class="planner-session-status">Saved sessions stay on this device so you can hand off or start a new chapter without wiping the old one.</p>
@@ -4044,7 +4043,6 @@ function renderBuilders(state) {
   var plannerNoteInput = document.getElementById("planner-note-input");
   var plannerNoteSave = document.getElementById("planner-note-save");
   var plannerSessionSave = document.getElementById("planner-session-save");
-  var plannerSessionRestart = document.getElementById("planner-session-restart");
   var plannerSessionFresh = document.getElementById("planner-session-fresh");
   var savedSessionsToggle = document.getElementById("saved-sessions-toggle");
   var savedSessionsList = document.getElementById("saved-sessions-list");
@@ -4239,19 +4237,6 @@ function renderBuilders(state) {
       saveState(state);
       render();
       window.alert("Session saved for later on this device.");
-    });
-  }
-
-  if (plannerSessionRestart) {
-    plannerSessionRestart.addEventListener("click", function () {
-      var confirmed = window.confirm("Save this session and start fresh? Your current session will be archived on this device, and your current progress, selections, open sections, and draft planner state will reset for a new person or a new chapter.");
-      if (!confirmed) return;
-      var state = loadState();
-      saveCurrentSessionSnapshot(state);
-      resetCurrentSessionState(state);
-      saveState(state);
-      render();
-      window.alert("Saved for later. Current progress was reset and a fresh session is ready.");
     });
   }
 
