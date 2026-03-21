@@ -806,7 +806,7 @@ h2 { font-size: clamp(1.8rem, 4.2vw, 2.4rem); margin-bottom: 10px; }
               <div class="planner-note-actions">
                 <button id="planner-note-save" class="secondary-button" type="button">Save note to date</button>
                 <button id="planner-session-save" class="secondary-button" type="button">Save session for later</button>
-                <button id="planner-session-restart" class="secondary-button" type="button">Save + start fresh</button>
+                <button id="planner-session-restart" class="secondary-button" type="button" title="Saves this session, then resets current progress for a fresh start">Save + start fresh</button>
               </div>
               <p id="planner-session-status" class="planner-session-status">Saved sessions stay on this device so you can hand off or start a new chapter without wiping the old one.</p>
             </div>
@@ -4125,14 +4125,14 @@ function renderBuilders(state) {
 
   if (plannerSessionRestart) {
     plannerSessionRestart.addEventListener("click", function () {
-      var confirmed = window.confirm("Save this session and start fresh? Your current session will be archived on this device, and the active planner will reset for a new person or a new chapter.");
+      var confirmed = window.confirm("Save this session and start fresh? Your current session will be archived on this device, and your current progress, selections, open sections, and draft planner state will reset for a new person or a new chapter.");
       if (!confirmed) return;
       var state = loadState();
       saveCurrentSessionSnapshot(state);
       resetCurrentSessionState(state);
       saveState(state);
       render();
-      window.alert("Saved for later. A fresh session is ready.");
+      window.alert("Saved for later. Current progress was reset and a fresh session is ready.");
     });
   }
 
