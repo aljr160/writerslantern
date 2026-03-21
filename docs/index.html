@@ -4054,6 +4054,8 @@ function renderBuilders(state) {
   if (clearAllButton) {
     clearAllButton.addEventListener("click", function (event) {
       event.preventDefault();
+      var confirmed = window.confirm("Start a new session? This clears your current mood, writing type, stage, genre, planner note draft, and collapses open sections. Your saved calendar notes and logged writing days stay saved.");
+      if (!confirmed) return;
       // reset state values
       var state = loadState();
       state.mood = "";
