@@ -8,15 +8,16 @@
 :root {
   --bg-top: #f4ecdf;
   --bg-bottom: #e2d5c1;
-  --card: rgba(255, 250, 242, 0.82);
+  --card: rgba(255, 250, 242, 0.84);
   --card-border: rgba(108, 78, 49, 0.12);
   --ink: #2f2418;
   --muted: #6d5843;
   --accent: #a2522f;
   --accent-strong: #8f4323;
-  --panel: rgba(255, 255, 255, 0.46);
-  --panel-strong: rgba(255, 244, 231, 0.78);
+  --panel: rgba(255, 255, 255, 0.52);
+  --panel-strong: rgba(255, 244, 231, 0.82);
   --shadow: 0 24px 70px rgba(86, 52, 24, 0.16);
+  --shadow-soft: 0 12px 28px rgba(86, 52, 24, 0.09);
 }
 * { box-sizing: border-box; }
 body {
@@ -24,6 +25,8 @@ body {
   min-height: 100vh;
   font-family: "Avenir Next", "Segoe UI", sans-serif;
   color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
   background:
     radial-gradient(circle at top left, rgba(255, 255, 255, 0.5), transparent 32%),
     radial-gradient(circle at bottom right, rgba(162, 82, 47, 0.15), transparent 28%),
@@ -45,13 +48,26 @@ body::before {
   padding: 24px;
 }
 .card {
-  width: min(900px, 100%);
+  width: min(920px, 100%);
   padding: 32px;
   border: 1px solid var(--card-border);
   border-radius: 28px;
   background: var(--card);
   backdrop-filter: blur(16px);
   box-shadow: var(--shadow);
+  position: relative;
+  overflow: hidden;
+}
+.card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(180deg, rgba(255,255,255,0.12), transparent 24%);
+}
+.card > * {
+  position: relative;
+  z-index: 1;
 }
 .eyebrow, .panel-label {
   margin: 0 0 8px;
@@ -78,6 +94,7 @@ h2 { font-size: clamp(1.8rem, 4.2vw, 2.4rem); margin-bottom: 10px; }
   padding: 22px;
   margin-top: 16px;
   border: 1px solid rgba(108, 78, 49, 0.1);
+  box-shadow: var(--shadow-soft);
 }
 .top-nav {
   position: sticky;
@@ -91,6 +108,7 @@ h2 { font-size: clamp(1.8rem, 4.2vw, 2.4rem); margin-bottom: 10px; }
   border-radius: 20px;
   background: rgba(255, 248, 241, 0.88);
   backdrop-filter: blur(14px);
+  border: 1px solid rgba(108, 78, 49, 0.08);
   box-shadow: 0 10px 24px rgba(86, 52, 24, 0.08);
 }
 .utility-row {
@@ -116,6 +134,7 @@ h2 { font-size: clamp(1.8rem, 4.2vw, 2.4rem); margin-bottom: 10px; }
   align-items: center;
   justify-content: center;
   gap: 8px;
+  min-height: 52px;
   transition: transform 140ms ease, box-shadow 140ms ease, border-color 140ms ease, background 140ms ease;
 }
 .nav-button:hover,
@@ -149,6 +168,7 @@ h2 { font-size: clamp(1.8rem, 4.2vw, 2.4rem); margin-bottom: 10px; }
   align-items: center;
   justify-content: center;
   gap: 8px;
+  box-shadow: var(--shadow-soft);
 }
 .panel-header-row {
   display: flex;
@@ -389,6 +409,7 @@ h2 { font-size: clamp(1.8rem, 4.2vw, 2.4rem); margin-bottom: 10px; }
   display: flex;
   flex-direction: column;
   gap: 14px;
+  padding: 6px 2px 2px;
 }
 .planner-calendar-header {
   display: flex;
@@ -426,6 +447,10 @@ h2 { font-size: clamp(1.8rem, 4.2vw, 2.4rem); margin-bottom: 10px; }
   display: grid;
   grid-template-columns: repeat(7, minmax(0, 1fr));
   gap: 6px;
+  padding: 10px;
+  border-radius: 18px;
+  background: rgba(255, 248, 241, 0.72);
+  border: 1px solid rgba(108, 78, 49, 0.08);
 }
 .planner-calendar-day-name {
   text-align: center;
@@ -442,6 +467,13 @@ h2 { font-size: clamp(1.8rem, 4.2vw, 2.4rem); margin-bottom: 10px; }
   font: inherit;
   color: var(--ink);
   position: relative;
+  transition: transform 120ms ease, border-color 120ms ease, box-shadow 120ms ease, background 120ms ease;
+}
+.planner-calendar-day:hover,
+.planner-calendar-day:focus-visible {
+  transform: translateY(-1px);
+  border-color: rgba(162, 82, 47, 0.35);
+  box-shadow: 0 8px 18px rgba(86, 52, 24, 0.08);
 }
 .planner-calendar-day.is-empty {
   visibility: hidden;
@@ -505,11 +537,75 @@ h2 { font-size: clamp(1.8rem, 4.2vw, 2.4rem); margin-bottom: 10px; }
   animation: panelFlash 260ms ease;
 }
 @media (max-width: 720px) {
-  .card { padding: 24px; }
-  .top-nav { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .panel-header-row { align-items: stretch; flex-direction: column; }
-  .secondary-button:not(.icon-button), .checkin-button, .genre-select-wrap, .genre-select { width: 100%; min-width: 0; }
-  .icon-button { align-self: flex-start; }
+  .app-shell { padding: 12px; }
+  .card {
+    padding: 18px;
+    border-radius: 22px;
+  }
+  .top-nav {
+    top: 8px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    padding: 8px;
+    border-radius: 16px;
+  }
+  .nav-button {
+    min-height: 58px;
+    font-size: 0.95rem;
+    padding: 10px 8px;
+    flex-direction: column;
+    gap: 5px;
+  }
+  .nav-icon { font-size: 1.05rem; }
+  .panel,
+  .checkin-row {
+    padding: 16px;
+    margin-top: 12px;
+    border-radius: 18px;
+  }
+  .panel-header-row { align-items: stretch; flex-direction: column; gap: 10px; }
+  h2 { line-height: 1.05; }
+  .page-intro,
+  .intro,
+  .motivation-message,
+  .prompt-text,
+  .streak-text,
+  .checkin-note { font-size: 0.97rem; }
+  .mood-picker {
+    gap: 8px;
+  }
+  .mood-button,
+  .mode-button,
+  .writing-type-button,
+  .genre-button {
+    min-height: 44px;
+    padding: 10px 12px;
+  }
+  .secondary-button:not(.icon-button), .checkin-button, .genre-select-wrap, .genre-select {
+    width: 100%;
+    min-width: 0;
+  }
+  .icon-button {
+    align-self: flex-start;
+  }
+  .planner-calendar-grid {
+    gap: 5px;
+    padding: 8px;
+  }
+  .planner-calendar-day {
+    min-height: 38px;
+    border-radius: 10px;
+    font-size: 0.92rem;
+  }
+  .planner-note-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .back-to-top {
+    position: static;
+    width: 100%;
+    margin-top: 14px;
+  }
 }
   </style>
 </head>
