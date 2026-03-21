@@ -535,6 +535,9 @@ h2 { font-size: clamp(1.8rem, 4.2vw, 2.4rem); margin-bottom: 10px; }
   padding-top: 12px;
   border-top: 1px solid rgba(108, 78, 49, 0.12);
 }
+.saved-sessions-toggle {
+  padding: 0;
+}
 .saved-sessions-title {
   margin: 0;
   font-size: 1rem;
@@ -858,16 +861,20 @@ h2 { font-size: clamp(1.8rem, 4.2vw, 2.4rem); margin-bottom: 10px; }
                 <button id="planner-note-save" class="secondary-button" type="button">Save note to date</button>
                 <button id="planner-session-save" class="secondary-button" type="button">Save session for later</button>
                 <button id="planner-session-restart" class="secondary-button" type="button" title="Saves this session, then resets current progress for a fresh start">Save + start fresh</button>
+                <button id="planner-session-fresh" class="secondary-button" type="button" title="Starts fresh without saving this session">Start fresh</button>
               </div>
               <p id="planner-session-status" class="planner-session-status">Saved sessions stay on this device so you can hand off or start a new chapter without wiping the old one.</p>
               <div class="saved-sessions-panel">
-                <div class="saved-sessions-header">
-                  <div>
+                <button id="saved-sessions-toggle" class="checklist-toggle saved-sessions-toggle" type="button" aria-expanded="false" aria-controls="saved-sessions-list-wrap">
+                  <span>
                     <p class="panel-label">Saved sessions</p>
                     <h3 class="saved-sessions-title">Load, rename, or delete a saved session</h3>
-                  </div>
+                  </span>
+                  <span id="saved-sessions-toggle-icon" class="checklist-toggle-icon">+</span>
+                </button>
+                <div id="saved-sessions-list-wrap" class="checklist-content is-collapsed">
+                  <div id="saved-sessions-list" class="saved-sessions-list"></div>
                 </div>
-                <div id="saved-sessions-list" class="saved-sessions-list"></div>
               </div>
             </div>
           </div>
@@ -1494,7 +1501,7 @@ window.WRITER_LANTERN_DATA = {
     try {
       var raw = localStorage.getItem(storageKey);
       if (!raw) {
-        return { streak: 0, lastCheckIn: "", mood: defaultMood, writingType: defaultWritingType, mode: "", genre: defaultGenre, page: "home", promptIndex: 0, motivationIndex: 0, checklistOpen: false, templateOpen: false, storyBuilderOpen: false, characterBuilderOpen: false, sceneBuilderOpen: false, firstChapterOpen: false, revisionChecklistOpen: false, plotHoleOpen: false, characterConsistencyOpen: false, problemOpen: false, faqOpen: false, craftGuideOpen: false, termsGuideOpen: false, proTipsOpen: false, completed: {}, checkinHistory: [], agenda: getEmptyAgenda(), calendarOffset: 0, calendarSelection: getTodayKey(), calendarNotes: {}, savedSessions: [] };
+        return { streak: 0, lastCheckIn: "", mood: defaultMood, writingType: defaultWritingType, mode: "", genre: defaultGenre, page: "home", promptIndex: 0, motivationIndex: 0, checklistOpen: false, templateOpen: false, storyBuilderOpen: false, characterBuilderOpen: false, sceneBuilderOpen: false, firstChapterOpen: false, revisionChecklistOpen: false, plotHoleOpen: false, characterConsistencyOpen: false, problemOpen: false, faqOpen: false, craftGuideOpen: false, termsGuideOpen: false, proTipsOpen: false, completed: {}, checkinHistory: [], agenda: getEmptyAgenda(), calendarOffset: 0, calendarSelection: getTodayKey(), calendarNotes: {}, savedSessions: [], savedSessionsOpen: false };
       }
       var parsed = JSON.parse(raw);
       var history = Array.isArray(parsed.checkinHistory) ? parsed.checkinHistory.filter(Boolean) : [];
@@ -1535,10 +1542,11 @@ window.WRITER_LANTERN_DATA = {
         calendarOffset: Number(parsed.calendarOffset) || 0,
         calendarSelection: typeof parsed.calendarSelection === "string" && parsed.calendarSelection ? parsed.calendarSelection : getTodayKey(),
         calendarNotes: parsed.calendarNotes || {},
-        savedSessions: normalizeSavedSessions(parsed.savedSessions)
+        savedSessions: normalizeSavedSessions(parsed.savedSessions),
+        savedSessionsOpen: Boolean(parsed.savedSessionsOpen)
       };
     } catch (error) {
-      return { streak: 0, lastCheckIn: "", mood: defaultMood, writingType: defaultWritingType, mode: "", genre: defaultGenre, page: "home", promptIndex: 0, motivationIndex: 0, checklistOpen: false, templateOpen: false, storyBuilderOpen: false, characterBuilderOpen: false, sceneBuilderOpen: false, firstChapterOpen: false, revisionChecklistOpen: false, plotHoleOpen: false, characterConsistencyOpen: false, problemOpen: false, faqOpen: false, craftGuideOpen: false, termsGuideOpen: false, proTipsOpen: false, completed: {}, checkinHistory: [], agenda: getEmptyAgenda(), calendarOffset: 0, calendarSelection: getTodayKey(), calendarNotes: {}, savedSessions: [] };
+      return { streak: 0, lastCheckIn: "", mood: defaultMood, writingType: defaultWritingType, mode: "", genre: defaultGenre, page: "home", promptIndex: 0, motivationIndex: 0, checklistOpen: false, templateOpen: false, storyBuilderOpen: false, characterBuilderOpen: false, sceneBuilderOpen: false, firstChapterOpen: false, revisionChecklistOpen: false, plotHoleOpen: false, characterConsistencyOpen: false, problemOpen: false, faqOpen: false, craftGuideOpen: false, termsGuideOpen: false, proTipsOpen: false, completed: {}, checkinHistory: [], agenda: getEmptyAgenda(), calendarOffset: 0, calendarSelection: getTodayKey(), calendarNotes: {}, savedSessions: [], savedSessionsOpen: false };
     }
   }
 
@@ -3770,6 +3778,12 @@ function renderBuilders(state) {
 
   function renderSavedSessions(state) {
     var list = document.getElementById("saved-sessions-list");
+    var wrap = document.getElementById("saved-sessions-list-wrap");
+    var toggle = document.getElementById("saved-sessions-toggle");
+    var icon = document.getElementById("saved-sessions-toggle-icon");
+    if (wrap) wrap.classList.toggle("is-collapsed", !state.savedSessionsOpen);
+    if (toggle) toggle.setAttribute("aria-expanded", state.savedSessionsOpen ? "true" : "false");
+    if (icon) icon.textContent = state.savedSessionsOpen ? "−" : "+";
     if (!list) return;
     var sessions = normalizeSavedSessions(state.savedSessions);
     if (!sessions.length) {
@@ -4031,6 +4045,8 @@ function renderBuilders(state) {
   var plannerNoteSave = document.getElementById("planner-note-save");
   var plannerSessionSave = document.getElementById("planner-session-save");
   var plannerSessionRestart = document.getElementById("planner-session-restart");
+  var plannerSessionFresh = document.getElementById("planner-session-fresh");
+  var savedSessionsToggle = document.getElementById("saved-sessions-toggle");
   var savedSessionsList = document.getElementById("saved-sessions-list");
 
   function persistAgendaSlot(slot, value) {
@@ -4236,6 +4252,27 @@ function renderBuilders(state) {
       saveState(state);
       render();
       window.alert("Saved for later. Current progress was reset and a fresh session is ready.");
+    });
+  }
+
+  if (plannerSessionFresh) {
+    plannerSessionFresh.addEventListener("click", function () {
+      var confirmed = window.confirm("Start fresh without saving? Your current progress, selections, open sections, and draft planner state will reset.");
+      if (!confirmed) return;
+      var state = loadState();
+      resetCurrentSessionState(state);
+      saveState(state);
+      render();
+      window.alert("Current progress was reset. A fresh session is ready.");
+    });
+  }
+
+  if (savedSessionsToggle) {
+    savedSessionsToggle.addEventListener("click", function () {
+      var state = loadState();
+      state.savedSessionsOpen = !state.savedSessionsOpen;
+      saveState(state);
+      render();
     });
   }
 
