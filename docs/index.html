@@ -18,6 +18,22 @@
   --panel-strong: rgba(255, 244, 231, 0.82);
   --shadow: 0 24px 70px rgba(86, 52, 24, 0.16);
   --shadow-soft: 0 12px 28px rgba(86, 52, 24, 0.09);
+  --page-line: rgba(84, 60, 39, 0.04);
+}
+body[data-theme="dark"] {
+  --bg-top: #171311;
+  --bg-bottom: #261d18;
+  --card: rgba(34, 27, 24, 0.9);
+  --card-border: rgba(216, 186, 157, 0.12);
+  --ink: #f4e8db;
+  --muted: #c7b2a0;
+  --accent: #d07c57;
+  --accent-strong: #ef9a73;
+  --panel: rgba(53, 42, 37, 0.72);
+  --panel-strong: rgba(63, 48, 42, 0.88);
+  --shadow: 0 28px 80px rgba(0, 0, 0, 0.42);
+  --shadow-soft: 0 12px 28px rgba(0, 0, 0, 0.22);
+  --page-line: rgba(255, 239, 221, 0.04);
 }
 * { box-sizing: border-box; }
 body {
@@ -37,7 +53,7 @@ body::before {
   position: fixed;
   inset: 0;
   pointer-events: none;
-  background-image: linear-gradient(rgba(84, 60, 39, 0.04) 1px, transparent 1px);
+  background-image: linear-gradient(var(--page-line) 1px, transparent 1px);
   background-size: 100% 28px;
   opacity: 0.5;
 }
@@ -114,6 +130,8 @@ h2 { font-size: clamp(1.8rem, 4.2vw, 2.4rem); margin-bottom: 10px; }
 .utility-row {
   display: flex;
   justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 8px;
   margin-bottom: 12px;
 }
 .utility-row .secondary-button {
@@ -709,6 +727,7 @@ h2 { font-size: clamp(1.8rem, 4.2vw, 2.4rem); margin-bottom: 10px; }
       </nav>
 
       <div class="utility-row">
+        <button id="theme-toggle-button" class="secondary-button" type="button" title="Toggle dark mode">🌙 Dark mode</button>
         <button id="clear-all-button" class="secondary-button" type="button" title="Clear all selections and collapse panels">↺ New session</button>
       </div>
 
@@ -1500,7 +1519,7 @@ window.WRITER_LANTERN_DATA = {
     try {
       var raw = localStorage.getItem(storageKey);
       if (!raw) {
-        return { streak: 0, lastCheckIn: "", mood: defaultMood, writingType: defaultWritingType, mode: "", genre: defaultGenre, page: "home", promptIndex: 0, motivationIndex: 0, checklistOpen: false, templateOpen: false, storyBuilderOpen: false, characterBuilderOpen: false, sceneBuilderOpen: false, firstChapterOpen: false, revisionChecklistOpen: false, plotHoleOpen: false, characterConsistencyOpen: false, problemOpen: false, faqOpen: false, craftGuideOpen: false, termsGuideOpen: false, proTipsOpen: false, completed: {}, checkinHistory: [], agenda: getEmptyAgenda(), calendarOffset: 0, calendarSelection: getTodayKey(), calendarNotes: {}, savedSessions: [], savedSessionsOpen: false };
+        return { streak: 0, lastCheckIn: "", mood: defaultMood, writingType: defaultWritingType, mode: "", genre: defaultGenre, page: "home", promptIndex: 0, motivationIndex: 0, checklistOpen: false, templateOpen: false, storyBuilderOpen: false, characterBuilderOpen: false, sceneBuilderOpen: false, firstChapterOpen: false, revisionChecklistOpen: false, plotHoleOpen: false, characterConsistencyOpen: false, problemOpen: false, faqOpen: false, craftGuideOpen: false, termsGuideOpen: false, proTipsOpen: false, completed: {}, checkinHistory: [], agenda: getEmptyAgenda(), calendarOffset: 0, calendarSelection: getTodayKey(), calendarNotes: {}, savedSessions: [], savedSessionsOpen: false, theme: "light" };
       }
       var parsed = JSON.parse(raw);
       var history = Array.isArray(parsed.checkinHistory) ? parsed.checkinHistory.filter(Boolean) : [];
@@ -1542,10 +1561,11 @@ window.WRITER_LANTERN_DATA = {
         calendarSelection: typeof parsed.calendarSelection === "string" && parsed.calendarSelection ? parsed.calendarSelection : getTodayKey(),
         calendarNotes: parsed.calendarNotes || {},
         savedSessions: normalizeSavedSessions(parsed.savedSessions),
-        savedSessionsOpen: Boolean(parsed.savedSessionsOpen)
+        savedSessionsOpen: Boolean(parsed.savedSessionsOpen),
+        theme: parsed.theme === "dark" ? "dark" : "light"
       };
     } catch (error) {
-      return { streak: 0, lastCheckIn: "", mood: defaultMood, writingType: defaultWritingType, mode: "", genre: defaultGenre, page: "home", promptIndex: 0, motivationIndex: 0, checklistOpen: false, templateOpen: false, storyBuilderOpen: false, characterBuilderOpen: false, sceneBuilderOpen: false, firstChapterOpen: false, revisionChecklistOpen: false, plotHoleOpen: false, characterConsistencyOpen: false, problemOpen: false, faqOpen: false, craftGuideOpen: false, termsGuideOpen: false, proTipsOpen: false, completed: {}, checkinHistory: [], agenda: getEmptyAgenda(), calendarOffset: 0, calendarSelection: getTodayKey(), calendarNotes: {}, savedSessions: [], savedSessionsOpen: false };
+      return { streak: 0, lastCheckIn: "", mood: defaultMood, writingType: defaultWritingType, mode: "", genre: defaultGenre, page: "home", promptIndex: 0, motivationIndex: 0, checklistOpen: false, templateOpen: false, storyBuilderOpen: false, characterBuilderOpen: false, sceneBuilderOpen: false, firstChapterOpen: false, revisionChecklistOpen: false, plotHoleOpen: false, characterConsistencyOpen: false, problemOpen: false, faqOpen: false, craftGuideOpen: false, termsGuideOpen: false, proTipsOpen: false, completed: {}, checkinHistory: [], agenda: getEmptyAgenda(), calendarOffset: 0, calendarSelection: getTodayKey(), calendarNotes: {}, savedSessions: [], savedSessionsOpen: false, theme: "light" };
     }
   }
 
@@ -3921,6 +3941,7 @@ function renderBuilders(state) {
     var noteEl = document.getElementById("checkin-note");
     var checkinButton = document.getElementById("checkin-button");
     var plannerSessionStatus = document.getElementById("planner-session-status");
+    var themeToggleButton = document.getElementById("theme-toggle-button");
 
     if (motivationEl) motivationEl.textContent = state.mood ? getMoodMessage(state) : getRotatingItem(data.motivations || [], 1, state.motivationIndex || 0);
     if (promptHeadingEl) promptHeadingEl.textContent = "Daily task";
@@ -3955,6 +3976,11 @@ function renderBuilders(state) {
       } else {
         plannerSessionStatus.textContent = "Saved sessions stay on this device so you can hand off or start a new chapter without wiping the old one.";
       }
+    }
+    document.body.setAttribute("data-theme", state.theme === "dark" ? "dark" : "light");
+    if (themeToggleButton) {
+      themeToggleButton.textContent = state.theme === "dark" ? "☀️ Light mode" : "🌙 Dark mode";
+      themeToggleButton.setAttribute("aria-pressed", state.theme === "dark" ? "true" : "false");
     }
   }
 
@@ -4012,6 +4038,7 @@ function renderBuilders(state) {
 
   var generateButton = document.getElementById("generate-button");
   var motivationGenerateButton = document.getElementById("motivation-generate-button");
+  var themeToggleButton = document.getElementById("theme-toggle-button");
   var moodResetButton = document.getElementById("mood-reset-button");
   var writingTypeResetButton = document.getElementById("writing-type-reset-button");
   var stageResetButton = document.getElementById("stage-reset-button");
@@ -4068,6 +4095,15 @@ function renderBuilders(state) {
     generateButton.addEventListener("click", function () {
       var state = loadState();
       state.promptIndex = (state.promptIndex || 0) + 1;
+      saveState(state);
+      render();
+    });
+  }
+
+  if (themeToggleButton) {
+    themeToggleButton.addEventListener("click", function () {
+      var state = loadState();
+      state.theme = state.theme === "dark" ? "light" : "dark";
       saveState(state);
       render();
     });
